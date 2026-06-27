@@ -1,0 +1,22 @@
+A user wants to access the website [www.foobar.com](http://www.foobar.com).
+
+First, the user's browser asks DNS to resolve the domain name. The DNS record for [www.foobar.com](http://www.foobar.com) is an A record that points to the server IP address 8.8.8.8.
+
+The request then goes to the server. A server is a physical or virtual machine that provides services to clients over a network.
+
+Inside this server, Nginx works as the web server. Its role is to receive HTTP or HTTPS requests from users and return web content. It can also forward dynamic requests to the application server.
+
+The application server runs the backend logic of the website. It executes the application code and prepares dynamic responses.
+
+The application files are the code base of the website.
+
+The MySQL database stores and manages the website data, such as users, posts, or products.
+
+The server communicates with the user's computer using HTTP or HTTPS over TCP/IP.
+
+The main issues with this infrastructure are:
+
+* It has a single point of failure because everything is on one server.
+* If the server goes down, the whole website becomes unavailable.
+* Deploying new code or restarting services can cause downtime.
+* It cannot scale well if there is too much incoming traffic.
