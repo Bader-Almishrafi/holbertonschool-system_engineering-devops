@@ -1,0 +1,31 @@
+A user wants to access [www.foobar.com](http://www.foobar.com).
+
+First, the browser asks DNS to resolve the domain name. The DNS record points [www.foobar.com](http://www.foobar.com) to the IP address of the load balancer.
+
+The load balancer is HAProxy. I added it to distribute incoming traffic between two servers instead of sending all traffic to one server. This improves availability and helps the infrastructure handle more traffic.
+
+The load balancer uses the Round Robin algorithm. This means it sends the first request to Server 1, the second request to Server 2, then repeats the cycle. This distributes traffic evenly between the servers.
+
+This setup is Active-Active because both servers are working at the same time and both can receive traffic from the load balancer.
+
+In an Active-Active setup, all servers are active and handle requests at the same time. In an Active-Passive setup, one server handles traffic while the other server waits as a backup and only becomes active if the main server fails.
+
+Each server contains Nginx, an application server, application files, and MySQL.
+
+Nginx is the web server. It receives HTTP requests and forwards dynamic requests to the application server.
+
+The application server runs the backend logic and executes the application code.
+
+The application files are the website code base.
+
+The database is MySQL. The database uses a Primary-Replica setup. The Primary database receives write operations such as inserts, updates, and deletes. The Replica database copies data from the Primary database and can be used for read operations.
+
+The difference between the Primary and Replica nodes is that the application writes data to the Primary node, while the Replica node is mainly used to copy data from the Primary and serve read requests.
+
+The issues with this infrastructure are:
+
+* The load balancer is a single point of failure. If it fails, users cannot access the website.
+* The Primary database can also be a single point of failure for write operations.
+* There is no firewall, so the servers are not protected by network filtering rules.
+* There is no HTTPS, so traffic is not encrypted.
+* There is no monitoring, so we cannot easily detect failures, high traffic, or server issues.
