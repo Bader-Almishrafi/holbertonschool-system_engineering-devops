@@ -1,0 +1,19 @@
+A user wants to access [www.foobar.com](http://www.foobar.com).
+
+First, the browser asks DNS to resolve the domain name. The DNS record points [www.foobar.com](http://www.foobar.com) to the IP address of the load balancer cluster.
+
+In this infrastructure, I added a second HAProxy load balancer and configured it as a cluster with the first one. I added it to remove the load balancer as a single point of failure. If one load balancer fails, the other one can continue routing traffic.
+
+The load balancer distributes incoming requests to the web server layer.
+
+I also split the components into separate servers: one server for the web server, one server for the application server, and one server for the database.
+
+The web server is Nginx. Its role is to receive HTTP or HTTPS requests and serve static content. It can also forward dynamic requests to the application server.
+
+The application server runs the business logic of the website. It executes the application code and generates dynamic responses.
+
+The database server runs MySQL. Its role is to store and manage the website data.
+
+Splitting these components is useful because each layer can be scaled, maintained, and secured independently. It also avoids having the web server, application server, and database competing for the same CPU, memory, and disk resources on one machine.
+
+This design improves availability, performance, and scalability compared to putting all components on the same servers.
