@@ -1,0 +1,31 @@
+A user wants to access [www.foobar.com](http://www.foobar.com).
+
+First, the browser asks DNS to resolve the domain name. The DNS record points [www.foobar.com](http://www.foobar.com) to the IP address of the load balancer.
+
+The request reaches the first firewall before the load balancer. I added firewalls to filter network traffic and allow only authorized traffic. For example, the firewall can allow HTTPS traffic on port 443 and block unnecessary ports.
+
+The load balancer is HAProxy. It distributes traffic between the two backend servers. I added it to improve availability and distribute the load between multiple servers.
+
+I added an SSL certificate on the load balancer to serve [www.foobar.com](http://www.foobar.com) over HTTPS. HTTPS encrypts the traffic between the user's browser and the website, protecting sensitive data from being read or modified during transmission.
+
+Behind the load balancer, there are two backend servers. Each server has Nginx, an application server, application files, MySQL, and a monitoring client.
+
+Nginx is the web server. It receives requests from the load balancer and forwards dynamic requests to the application server.
+
+The application server runs the backend logic and executes the application code.
+
+The application files are the website code base.
+
+The MySQL databases are configured as Primary-Replica. The Primary database accepts write operations, while the Replica database copies data from the Primary and can be used for read operations.
+
+I added monitoring clients on the load balancer and both backend servers. Monitoring is used to collect metrics, logs, and health information. It helps detect problems such as high CPU usage, low memory, high traffic, server errors, or service downtime.
+
+The monitoring client collects data from the server and sends it to a monitoring service such as Sumo Logic, Datadog, or Prometheus. It can collect system metrics, application logs, web server logs, and database metrics.
+
+To monitor the web server QPS, which means queries per second or requests per second, I would collect Nginx access logs or use an Nginx metrics exporter/status module. The monitoring system can then calculate how many requests are handled per second.
+
+The issues with this infrastructure are:
+
+* Terminating SSL at the load balancer can be an issue because traffic between the load balancer and backend servers may become unencrypted if HTTPS is not also used internally.
+* Having only one MySQL server capable of accepting writes is an issue because the Primary database becomes a single point of failure for write operations.
+* Having all components on the same servers can be a problem because the database, web server, and application server compete for the same CPU, memory, and disk resources. It also makes scaling harder because each layer cannot be scaled independently.
